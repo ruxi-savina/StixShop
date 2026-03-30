@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
@@ -34,7 +34,13 @@ export class CatalogComponent implements OnInit {
     public productService: ProductService,
     public categoryService: CategoryService,
     public authService: AuthService,
-  ) {}
+  ) {
+    // Re-fetch products whenever the admin state changes (login or logout)
+    effect(() => {
+      authService.isLoggedIn();
+      this.applyFilters();
+    }, { allowSignalWrites: true });
+  }
 
   products = computed(() => this.productService.products());
   categories = computed(() => this.categoryService.categories());
