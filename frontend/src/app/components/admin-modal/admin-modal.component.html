@@ -1,0 +1,31 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal-glass" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="close()">&times;</button>
+      <h2 class="modal-title">Admin Access</h2>
+      <p class="modal-subtitle">Enter the admin password to continue</p>
+
+      <form (ngSubmit)="submit()">
+        <div class="input-group">
+          <input
+            type="password"
+            class="glass-input"
+            placeholder="Password"
+            [ngModel]="password()"
+            (ngModelChange)="password.set($event)"
+            name="password"
+            autocomplete="current-password"
+          />
+        </div>
+
+        @if (error()) {
+          <p class="error-text">{{ error() }}</p>
+        }
+
+        <button type="submit" class="submit-btn" [disabled]="loading()">
+          {{ loading() ? 'Authenticating...' : 'Login' }}
+        </button>
+      </form>
+    </div>
+  </div>
+}

@@ -1,0 +1,73 @@
+<div class="details-container">
+  <a routerLink="/" class="back-link">&larr; Back to Catalog</a>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading product...</p>
+    </div>
+  } @else if (product()) {
+    <div class="details-layout">
+      <!-- Image gallery -->
+      <div class="gallery">
+        <div class="gallery-main">
+          @if (product()!.images.length > 0) {
+            <img [src]="product()!.images[selectedImageIndex()].url" [alt]="product()!.name" class="main-image" />
+          } @else {
+            <div class="image-placeholder">
+              <span>◈</span>
+            </div>
+          }
+        </div>
+
+        @if (product()!.images.length > 1) {
+          <div class="gallery-thumbs">
+            @for (img of product()!.images; track img.id; let i = $index) {
+              <button
+                class="thumb"
+                [class.thumb-active]="selectedImageIndex() === i"
+                (click)="selectImage(i)"
+              >
+                <img [src]="img.url" [alt]="product()!.name + ' thumbnail ' + (i + 1)" />
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Product info -->
+      <div class="info glass-panel">
+        <div class="info-header">
+          <span class="product-label" [class]="getLabelClass(product()!.label)">{{ product()!.label }}</span>
+          <span class="product-status" [class]="getStatusClass(product()!.availabilityStatus)">
+            {{ product()!.availabilityStatus }}
+          </span>
+        </div>
+
+        <h1 class="product-title">{{ product()!.name }}</h1>
+        <p class="product-short-desc">{{ product()!.shortDescription }}</p>
+
+        <div class="price-section">
+          <span class="price">${{ product()!.price | number:'1.2-2' }}</span>
+          <span class="rental-units">{{ product()!.rentalUnits }} unit(s)</span>
+        </div>
+
+        <div class="meta-row">
+          <span class="meta-label">Category</span>
+          <span class="meta-value">{{ product()!.category.name }}</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3 class="section-title">Description</h3>
+        <p class="long-description">{{ product()!.longDescription }}</p>
+
+        @if (!product()!.isVisible && authService.isAdmin()) {
+          <div class="hidden-badge">
+            <span>🔒 This product is hidden from public view</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

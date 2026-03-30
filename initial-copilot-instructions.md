@@ -1,6 +1,7 @@
 Role: Act as a Senior Full-Stack Engineer and Architect. 
 Task: Build a full-stack equipment rental catalog application with a psychedelic-modern aesthetic.
-Name of the app: StixShop
+Name of the app: stix-shop
+DisplayName: StixShop
 1. Technical Stack
     * Frontend: Angular 18+ using Signals for reactive state management.
     * Backend: NestJS (Node.js) using a modular architecture (Services, Controllers, Modules).
@@ -47,6 +48,7 @@ Name of the app: StixShop
     * Prefer clean and simple patterns over unnecessary complexity.
     * Generate the code step by step with clear sections.
     * Make the code easily readable, reusable, clean, and easy to modify.
+    * Add .gitignore file with the required exclusions.
     * Include a README.md with:
         * Local setup steps (npm install, npx prisma generate).
         * Instructions for running Prisma migrations against the database.

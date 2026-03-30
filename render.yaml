@@ -1,0 +1,51 @@
+# Render Blueprint — StixShop
+# Docs: https://render.com/docs/blueprint-spec
+#
+# BEFORE DEPLOYING:
+#   1. Fill in all env vars marked sync: false in the Render dashboard
+#   2. Update frontend/src/environments/environment.prod.ts with your
+#      backend service URL (e.g. https://stixshop-api.onrender.com/api)
+#   3. Make sure your Supabase "product-images" bucket exists and has RLS policies set
+
+services:
+  # ── Backend: NestJS API ──────────────────────────────────────────────────────
+  - type: web
+    name: stixshop-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: node dist/main
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false   # Supabase pooled connection (pgbouncer=true)
+      - key: DIRECT_URL
+        sync: false   # Supabase direct connection (for migrations)
+      - key: JWT_SECRET
+        sync: false   # Long random string — generate with: node -e "require('crypto').randomBytes(48).toString('hex')"
+      - key: ADMIN_PASSWORD_HASH
+        sync: false   # Generate with: node hash-password.js <password>
+      - key: SUPABASE_URL
+        sync: false   # https://<project-ref>.supabase.co
+      - key: SUPABASE_KEY
+        sync: false   # Supabase publishable (anon) key
+      - key: CORS_ORIGIN
+        sync: false   # Your frontend URL e.g. https://stixshop.onrender.com
+
+  # ── Frontend: Angular Static Site ───────────────────────────────────────────
+  - type: web
+    name: stixshop
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && node scripts/set-env.js && npx ng build --configuration production
+    staticPublishPath: dist/frontend/browser
+    envVars:
+      - key: API_URL
+        sync: false   # Your backend URL e.g. https://stixshop-api.onrender.com/api
+    routes:
+      # Rewrite all routes to index.html for Angular client-side routing
+      - type: rewrite
+        source: /*
+        destination: /index.html

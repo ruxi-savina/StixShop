@@ -1,0 +1,175 @@
+<div class="modal-overlay" (click)="close()">
+  <div class="modal-glass modal-large" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="close()">&times;</button>
+    <h2 class="modal-title">{{ isEditing ? 'Edit Product' : 'Add Product' }}</h2>
+
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+      </div>
+    } @else {
+      <form (ngSubmit)="submit()" class="product-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input
+              type="text"
+              class="glass-input"
+              [ngModel]="name()"
+              (ngModelChange)="name.set($event)"
+              name="name"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select
+              class="glass-select"
+              [ngModel]="categoryId()"
+              (ngModelChange)="categoryId.set($event)"
+              name="categoryId"
+              required
+            >
+              <option [ngValue]="null" disabled>Select category</option>
+              @for (cat of categoryService.categories(); track cat.id) {
+                <option [ngValue]="cat.id">{{ cat.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Short Description</label>
+          <input
+            type="text"
+            class="glass-input"
+            [ngModel]="shortDescription()"
+            (ngModelChange)="shortDescription.set($event)"
+            name="shortDescription"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Long Description</label>
+          <textarea
+            class="glass-input glass-textarea"
+            [ngModel]="longDescription()"
+            (ngModelChange)="longDescription.set($event)"
+            name="longDescription"
+            rows="4"
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Price</label>
+            <input
+              type="number"
+              class="glass-input"
+              [ngModel]="price()"
+              (ngModelChange)="price.set($event)"
+              name="price"
+              min="0"
+              step="0.01"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Rental Units</label>
+            <input
+              type="number"
+              class="glass-input"
+              [ngModel]="rentalUnits()"
+              (ngModelChange)="rentalUnits.set($event)"
+              name="rentalUnits"
+              min="0"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select
+              class="glass-select"
+              [ngModel]="availabilityStatus()"
+              (ngModelChange)="availabilityStatus.set($event)"
+              name="availabilityStatus"
+            >
+              <option value="AVAILABLE">Available</option>
+              <option value="RENTED">Rented</option>
+              <option value="SOLD">Sold</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Label</label>
+            <select
+              class="glass-select"
+              [ngModel]="label()"
+              (ngModelChange)="label.set($event)"
+              name="label"
+            >
+              <option value="RENT">For Rent</option>
+              <option value="SELL">For Sale</option>
+            </select>
+          </div>
+
+          <div class="form-group form-group-checkbox">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [ngModel]="isVisible()"
+                (ngModelChange)="isVisible.set($event)"
+                name="isVisible"
+              />
+              <span>Visible to public</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Image upload -->
+        <div class="form-group">
+          <label class="form-label">Images</label>
+          <div class="image-upload-area">
+            @if (imageUrls().length > 0) {
+              <div class="image-previews">
+                @for (url of imageUrls(); track url; let i = $index) {
+                  <div class="image-preview">
+                    <img [src]="url" alt="Product image" />
+                    <button type="button" class="remove-image" (click)="removeImage(i)">&times;</button>
+                  </div>
+                }
+              </div>
+            }
+
+            <label class="upload-btn">
+              {{ uploading() ? 'Uploading...' : '+ Add Images' }}
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                (change)="onFileSelected($event)"
+                [disabled]="uploading()"
+                hidden
+              />
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="close()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="loading()">
+            {{ isEditing ? 'Update' : 'Create' }} Product
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+</div>

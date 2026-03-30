@@ -1,0 +1,12 @@
+<footer class="glass-footer">
+  <div class="footer-inner">
+    <p class="copyright">&copy; 2024 StixShop. All rights reserved.</p>
+    @if (authService.isAdmin()) {
+      <button class="admin-logout-btn" (click)="logout()">Logout Admin</button>
+    } @else {
+      <button class="admin-trigger" (click)="openAdminModal()" title="Admin Access">
+        ◈
+      </button>
+    }
+  </div>
+</footer>

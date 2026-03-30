@@ -1,0 +1,164 @@
+<div class="catalog-container">
+  <!-- Filters bar -->
+  <section class="filters-bar glass-panel">
+    <div class="search-box">
+      <input
+        type="text"
+        class="glass-input"
+        placeholder="Search products..."
+        [ngModel]="searchQuery()"
+        (ngModelChange)="onSearchChange($event)"
+      />
+    </div>
+
+    <div class="filter-group">
+      <select
+        class="glass-select"
+        [ngModel]="selectedCategory() ?? ''"
+        (ngModelChange)="onCategoryChange($event)"
+      >
+        <option value="">All Categories</option>
+        @for (cat of categories(); track cat.id) {
+          <option [value]="cat.id">{{ cat.name }}</option>
+        }
+      </select>
+
+      <select
+        class="glass-select"
+        [ngModel]="selectedStatus()"
+        (ngModelChange)="onStatusChange($event)"
+      >
+        <option value="">All Statuses</option>
+        <option value="AVAILABLE">Available</option>
+        <option value="RENTED">Rented</option>
+        <option value="SOLD">Sold</option>
+      </select>
+
+      <select
+        class="glass-select"
+        [ngModel]="selectedLabel()"
+        (ngModelChange)="onLabelChange($event)"
+      >
+        <option value="">All Labels</option>
+        <option value="RENT">For Rent</option>
+        <option value="SELL">For Sale</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- Admin controls -->
+  @if (authService.isAdmin()) {
+    <section class="admin-controls glass-panel">
+      <h3 class="admin-title">Admin Panel</h3>
+      <div class="admin-actions">
+        <button class="btn btn-primary" (click)="openAddProduct()">+ Add Product</button>
+        <button class="btn btn-secondary" (click)="toggleCategoryManager()">
+          {{ showCategoryManager() ? 'Hide' : 'Manage' }} Categories
+        </button>
+      </div>
+
+      <!-- Category Manager -->
+      @if (showCategoryManager()) {
+        <div class="category-manager">
+          <div class="category-add">
+            <input
+              type="text"
+              class="glass-input"
+              placeholder="New category name"
+              [ngModel]="newCategoryName()"
+              (ngModelChange)="newCategoryName.set($event)"
+              (keyup.enter)="addCategory()"
+            />
+            <button class="btn btn-primary btn-sm" (click)="addCategory()">Add</button>
+          </div>
+          <ul class="category-list">
+            @for (cat of categories(); track cat.id) {
+              <li class="category-item">
+                @if (editingCategoryId() === cat.id) {
+                  <input
+                    type="text"
+                    class="glass-input glass-input-sm"
+                    [ngModel]="editingCategoryName()"
+                    (ngModelChange)="editingCategoryName.set($event)"
+                    (keyup.enter)="saveCategory()"
+                  />
+                  <button class="btn btn-sm btn-primary" (click)="saveCategory()">Save</button>
+                  <button class="btn btn-sm btn-ghost" (click)="cancelEditCategory()">Cancel</button>
+                } @else {
+                  <span class="category-name">{{ cat.name }}</span>
+                  <span class="category-count">({{ cat._count?.products ?? 0 }})</span>
+                  <button class="btn btn-sm btn-ghost" (click)="startEditCategory(cat.id, cat.name)">Edit</button>
+                  <button class="btn btn-sm btn-danger" (click)="removeCategory(cat.id)">Delete</button>
+                }
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </section>
+  }
+
+  <!-- Product Grid -->
+  @if (productService.loading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading products...</p>
+    </div>
+  } @else if (products().length === 0) {
+    <div class="empty-state glass-panel">
+      <p>No products found. Try adjusting your filters.</p>
+    </div>
+  } @else {
+    <section class="product-grid">
+      @for (product of products(); track product.id) {
+        <div class="product-card glass-card" [class.hidden-product]="!product.isVisible">
+          <a [routerLink]="['/product', product.id]" class="product-link">
+            <div class="product-image-wrap">
+              @if (product.images.length > 0) {
+                <img [src]="product.images[0].url" [alt]="product.name" class="product-image" />
+              } @else {
+                <div class="product-image-placeholder">
+                  <span>◈</span>
+                </div>
+              }
+              <span class="product-label" [class]="getLabelClass(product.label)">
+                {{ product.label }}
+              </span>
+            </div>
+
+            <div class="product-info">
+              <h3 class="product-name">{{ product.name }}</h3>
+              <p class="product-desc">{{ product.shortDescription }}</p>
+              <div class="product-meta">
+                <span class="product-price">${{ product.price | number:'1.2-2' }}</span>
+                <span class="product-status" [class]="getStatusClass(product.availabilityStatus)">
+                  {{ product.availabilityStatus }}
+                </span>
+              </div>
+              <span class="product-category">{{ product.category.name }}</span>
+            </div>
+          </a>
+
+          <!-- Admin overlay -->
+          @if (authService.isAdmin()) {
+            <div class="admin-overlay">
+              <button class="btn btn-sm btn-ghost" (click)="openEditProduct(product.id)">Edit</button>
+              <button class="btn btn-sm btn-ghost" (click)="toggleVisibility(product.id)">
+                {{ product.isVisible ? 'Hide' : 'Show' }}
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="deleteProduct(product.id)">Delete</button>
+            </div>
+          }
+        </div>
+      }
+    </section>
+  }
+</div>
+
+<!-- Product Form Modal -->
+@if (showProductForm()) {
+  <app-product-form
+    [productId]="editingProductId()"
+    (closed)="onProductFormClose()"
+  />
+}
