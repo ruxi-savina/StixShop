@@ -42,6 +42,22 @@ export class ProductDetailsComponent implements OnInit {
     this.selectedImageIndex.set(index);
   }
 
+  prevImage() {
+    const images = this.product()?.images ?? [];
+    if (images.length < 2) return;
+    this.selectedImageIndex.set(
+      (this.selectedImageIndex() - 1 + images.length) % images.length,
+    );
+  }
+
+  nextImage() {
+    const images = this.product()?.images ?? [];
+    if (images.length < 2) return;
+    this.selectedImageIndex.set(
+      (this.selectedImageIndex() + 1) % images.length,
+    );
+  }
+
   getStatusClass(status: string): string {
     switch (status) {
       case 'AVAILABLE': return 'status-available';

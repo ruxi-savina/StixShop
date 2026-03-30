@@ -24,24 +24,26 @@
   align-items: start;
 }
 
-// Gallery
+// Gallery / Carousel
 .gallery {
   position: sticky;
   top: 100px;
 }
 
-.gallery-main {
+.carousel {
+  position: relative;
   border-radius: 16px;
   overflow: hidden;
   background: rgba(0, 0, 0, 0.3);
   aspect-ratio: 4/3;
-  margin-bottom: 1rem;
 }
 
-.main-image {
+.carousel-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  display: block;
+  transition: opacity 0.2s ease;
 }
 
 .image-placeholder {
@@ -55,36 +57,62 @@
   color: rgba(255, 255, 255, 0.12);
 }
 
-.gallery-thumbs {
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
   display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.2s;
+  z-index: 2;
+
+  &:hover {
+    background: rgba(0, 229, 255, 0.25);
+    transform: translateY(-50%) scale(1.1);
+  }
 }
 
-.thumb {
-  width: 72px;
-  height: 54px;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 2px solid transparent;
+.carousel-prev { left: 0.75rem; }
+.carousel-next { right: 0.75rem; }
+
+.carousel-dots {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.4rem;
+  z-index: 2;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.35);
   cursor: pointer;
-  flex-shrink: 0;
   padding: 0;
-  background: none;
-  transition: border-color 0.2s;
+  transition: background 0.2s, transform 0.2s;
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  &.dot-active {
+    background: #00e5ff;
+    transform: scale(1.3);
   }
 
-  &.thumb-active {
-    border-color: #00e5ff;
-  }
-
-  &:hover:not(.thumb-active) {
-    border-color: rgba(255, 255, 255, 0.3);
+  &:hover:not(.dot-active) {
+    background: rgba(255, 255, 255, 0.6);
   }
 }
 

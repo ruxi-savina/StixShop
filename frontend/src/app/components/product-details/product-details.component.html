@@ -8,31 +8,34 @@
     </div>
   } @else if (product()) {
     <div class="details-layout">
-      <!-- Image gallery -->
+      <!-- Image carousel -->
       <div class="gallery">
-        <div class="gallery-main">
+        <div class="carousel">
           @if (product()!.images.length > 0) {
-            <img [src]="product()!.images[selectedImageIndex()].url" [alt]="product()!.name" class="main-image" />
+            <img
+              [src]="product()!.images[selectedImageIndex()].url"
+              [alt]="product()!.name"
+              class="carousel-image"
+            />
           } @else {
-            <div class="image-placeholder">
-              <span>◈</span>
+            <div class="image-placeholder"><span>◈</span></div>
+          }
+
+          @if (product()!.images.length > 1) {
+            <button class="carousel-btn carousel-prev" (click)="prevImage()">&#8249;</button>
+            <button class="carousel-btn carousel-next" (click)="nextImage()">&#8250;</button>
+
+            <div class="carousel-dots">
+              @for (img of product()!.images; track img.id; let i = $index) {
+                <button
+                  class="dot"
+                  [class.dot-active]="selectedImageIndex() === i"
+                  (click)="selectImage(i)"
+                ></button>
+              }
             </div>
           }
         </div>
-
-        @if (product()!.images.length > 1) {
-          <div class="gallery-thumbs">
-            @for (img of product()!.images; track img.id; let i = $index) {
-              <button
-                class="thumb"
-                [class.thumb-active]="selectedImageIndex() === i"
-                (click)="selectImage(i)"
-              >
-                <img [src]="img.url" [alt]="product()!.name + ' thumbnail ' + (i + 1)" />
-              </button>
-            }
-          </div>
-        }
       </div>
 
       <!-- Product info -->
@@ -48,7 +51,7 @@
         <p class="product-short-desc">{{ product()!.shortDescription }}</p>
 
         <div class="price-section">
-          <span class="price">${{ product()!.price | number:'1.2-2' }}</span>
+          <span class="price">CHF {{ product()!.price | number:'1.2-2' }}</span>
           <span class="rental-units">{{ product()!.rentalUnits }} unit(s)</span>
         </div>
 

@@ -121,21 +121,23 @@
                   <span>◈</span>
                 </div>
               }
-              <span class="product-label" [class]="getLabelClass(product.label)">
-                {{ product.label }}
-              </span>
             </div>
 
             <div class="product-info">
               <h3 class="product-name">{{ product.name }}</h3>
               <p class="product-desc">{{ product.shortDescription }}</p>
               <div class="product-meta">
-                <span class="product-price">${{ product.price | number:'1.2-2' }}</span>
+                <span class="product-price">CHF {{ product.price | number:'1.2-2' }}</span>
                 <span class="product-status" [class]="getStatusClass(product.availabilityStatus)">
                   {{ product.availabilityStatus }}
                 </span>
               </div>
-              <span class="product-category">{{ product.category.name }}</span>
+              <div class="product-footer">
+                <span class="product-category">{{ product.category.name }}</span>
+                <span class="product-label" [class]="getLabelClass(product.label)">
+                  {{ product.label }}
+                </span>
+              </div>
             </div>
           </a>
 
