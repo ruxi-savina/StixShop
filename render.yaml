@@ -34,7 +34,18 @@ services:
       - key: CORS_ORIGIN
         sync: false   # Your frontend URL e.g. https://stixshop.onrender.com
 
-  # ── Frontend: Angular Static Site ───────────────────────────────────────────
+  # ── Keep-alive cron job ──────────────────────────────────────────────────────
+  # Pings the API every 14 minutes to prevent the free tier from sleeping
+  - type: cron
+    name: stixshop-keepalive
+    runtime: node
+    plan: free
+    schedule: "*/14 * * * *"
+    buildCommand: echo "ready"
+    startCommand: node -e "fetch(process.env.API_URL).then(r => console.log('ping', r.status)).catch(e => console.error('ping failed', e.message))"
+    envVars:
+      - key: API_URL
+        value: https://stixshop-api.onrender.com/api/categories
   - type: web
     name: stixshop
     runtime: static
