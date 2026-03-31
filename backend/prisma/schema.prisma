@@ -19,6 +19,12 @@ enum Label {
   SELL
 }
 
+enum RentalPeriod {
+  DAY
+  WEEK
+  MONTH
+}
+
 model Category {
   id       Int       @id @default(autoincrement())
   name     String    @unique
@@ -34,6 +40,7 @@ model Product {
   rentalUnits        Int
   availabilityStatus AvailabilityStatus @default(AVAILABLE)
   label              Label              @default(RENT)
+  rentalPeriod       RentalPeriod       @default(DAY)
   isVisible          Boolean            @default(true)
   categoryId         Int
   category           Category           @relation(fields: [categoryId], references: [id])

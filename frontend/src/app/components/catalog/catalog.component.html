@@ -136,7 +136,12 @@
               <h3 class="product-name">{{ product.name }}</h3>
               <p class="product-desc">{{ product.shortDescription }}</p>
               <div class="product-meta">
-                <span class="product-price">CHF {{ product.price | number:'1.2-2' }}</span>
+                <div class="price-group">
+                  <span class="product-price">CHF {{ product.price | number:'1.2-2' }}</span>
+                  @if (product.label === 'RENT') {
+                    <span class="rental-period">/ {{ product.rentalPeriod | lowercase }}</span>
+                  }
+                </div>
                 <span class="product-status" [class]="getStatusClass(product.availabilityStatus)">
                   {{ product.availabilityStatus }}
                 </span>

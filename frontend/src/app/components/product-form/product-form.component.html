@@ -121,6 +121,22 @@
             </select>
           </div>
 
+          @if (label() === 'RENT') {
+            <div class="form-group">
+              <label class="form-label">Price per</label>
+              <select
+                class="glass-select"
+                [ngModel]="rentalPeriod()"
+                (ngModelChange)="rentalPeriod.set($event)"
+                name="rentalPeriod"
+              >
+                <option value="DAY">Day</option>
+                <option value="WEEK">Week</option>
+                <option value="MONTH">Month</option>
+              </select>
+            </div>
+          }
+
           <div class="form-group form-group-checkbox">
             <label class="checkbox-label">
               <input

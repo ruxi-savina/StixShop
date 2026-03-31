@@ -12,6 +12,7 @@ export interface ProductImage {
 
 export type AvailabilityStatus = 'AVAILABLE' | 'RENTED' | 'SOLD';
 export type Label = 'RENT' | 'SELL';
+export type RentalPeriod = 'DAY' | 'WEEK' | 'MONTH';
 
 export interface Product {
   id: number;
@@ -22,6 +23,7 @@ export interface Product {
   rentalUnits: number;
   availabilityStatus: AvailabilityStatus;
   label: Label;
+  rentalPeriod: RentalPeriod;
   isVisible: boolean;
   categoryId: number;
   category: Category;
@@ -38,6 +40,7 @@ export interface CreateProductPayload {
   rentalUnits: number;
   availabilityStatus?: AvailabilityStatus;
   label?: Label;
+  rentalPeriod?: RentalPeriod;
   isVisible?: boolean;
   categoryId: number;
   imageUrls?: string[];

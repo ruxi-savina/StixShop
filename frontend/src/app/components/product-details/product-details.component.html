@@ -65,7 +65,12 @@
         <p class="product-short-desc">{{ product()!.shortDescription }}</p>
 
         <div class="price-section">
-          <span class="price">CHF {{ product()!.price | number:'1.2-2' }}</span>
+          <div class="price-group">
+            <span class="price">CHF {{ product()!.price | number:'1.2-2' }}</span>
+            @if (product()!.label === 'RENT') {
+              <span class="rental-period">/ {{ product()!.rentalPeriod | lowercase }}</span>
+            }
+          </div>
           <span class="rental-units">{{ product()!.rentalUnits }} unit(s)</span>
         </div>
 

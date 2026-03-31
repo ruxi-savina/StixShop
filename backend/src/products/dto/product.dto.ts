@@ -1,5 +1,5 @@
 import { IsString, IsNumber, IsEnum, IsBoolean, IsOptional, IsArray } from 'class-validator';
-import { AvailabilityStatus, Label } from '@prisma/client';
+import { AvailabilityStatus, Label, RentalPeriod } from '@prisma/client';
 
 export class CreateProductDto {
   @IsString()
@@ -24,6 +24,10 @@ export class CreateProductDto {
   @IsEnum(Label)
   @IsOptional()
   label?: Label;
+
+  @IsEnum(RentalPeriod)
+  @IsOptional()
+  rentalPeriod?: RentalPeriod;
 
   @IsBoolean()
   @IsOptional()
@@ -66,6 +70,10 @@ export class UpdateProductDto {
   @IsEnum(Label)
   @IsOptional()
   label?: Label;
+
+  @IsEnum(RentalPeriod)
+  @IsOptional()
+  rentalPeriod?: RentalPeriod;
 
   @IsBoolean()
   @IsOptional()

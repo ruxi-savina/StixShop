@@ -249,6 +249,17 @@
   font-size: 0.9rem;
 }
 
+.rental-period {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 1rem;
+}
+
+.price-group {
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+}
+
 .meta-row {
   display: flex;
   align-items: center;

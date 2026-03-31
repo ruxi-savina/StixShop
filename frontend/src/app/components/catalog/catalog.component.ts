@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, LowerCasePipe } from '@angular/common';
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
 import { AuthService } from '../../services/auth.service';
@@ -11,7 +11,7 @@ import { AvailabilityStatus, Label, Product } from '../../models/product.model';
 @Component({
   selector: 'app-catalog',
   standalone: true,
-  imports: [FormsModule, RouterLink, DecimalPipe, ProductFormComponent],
+  imports: [FormsModule, RouterLink, DecimalPipe, LowerCasePipe, ProductFormComponent],
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.scss',
 })

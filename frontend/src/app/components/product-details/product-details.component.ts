@@ -1,6 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, LowerCasePipe } from '@angular/common';
 import { ProductService } from '../../services/product.service';
 import { AuthService } from '../../services/auth.service';
 import { Product } from '../../models/product.model';
@@ -8,7 +8,7 @@ import { Product } from '../../models/product.model';
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [RouterLink, DecimalPipe],
+  imports: [RouterLink, DecimalPipe, LowerCasePipe],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.scss',
 })

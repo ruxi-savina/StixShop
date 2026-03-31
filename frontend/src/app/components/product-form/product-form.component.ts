@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
 import { UploadService } from '../../services/upload.service';
-import { Product, AvailabilityStatus, Label } from '../../models/product.model';
+import { Product, AvailabilityStatus, Label, RentalPeriod } from '../../models/product.model';
 
 @Component({
   selector: 'app-product-form',
@@ -26,6 +26,7 @@ export class ProductFormComponent implements OnInit {
   rentalUnits = signal(1);
   availabilityStatus = signal<AvailabilityStatus>('AVAILABLE');
   label = signal<Label>('RENT');
+  rentalPeriod = signal<RentalPeriod>('DAY');
   isVisible = signal(true);
   categoryId = signal<number | null>(null);
   imageUrls = signal<string[]>([]);
@@ -59,6 +60,7 @@ export class ProductFormComponent implements OnInit {
       this.rentalUnits.set(p.rentalUnits);
       this.availabilityStatus.set(p.availabilityStatus);
       this.label.set(p.label);
+      this.rentalPeriod.set(p.rentalPeriod);
       this.isVisible.set(p.isVisible);
       this.categoryId.set(p.categoryId);
       this.imageUrls.set(p.images.map((img) => img.url));
@@ -110,6 +112,7 @@ export class ProductFormComponent implements OnInit {
         rentalUnits: this.rentalUnits(),
         availabilityStatus: this.availabilityStatus(),
         label: this.label(),
+        rentalPeriod: this.label() === 'RENT' ? this.rentalPeriod() : undefined,
         isVisible: this.isVisible(),
         categoryId: this.categoryId()!,
         imageUrls: this.imageUrls(),
