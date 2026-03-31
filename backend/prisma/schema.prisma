@@ -40,6 +40,11 @@ model Product {
   images             ProductImage[]
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
+
+  @@index([isVisible, createdAt(sort: Desc)])
+  @@index([categoryId])
+  @@index([availabilityStatus])
+  @@index([label])
 }
 
 model ProductImage {
