@@ -1,0 +1,16 @@
+name: Keep API Alive
+
+on:
+  schedule:
+    # Runs every 14 minutes — keeps the Render free tier from sleeping
+    - cron: "*/14 * * * *"
+  workflow_dispatch: # allow manual trigger
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping API
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://stixshop-api.onrender.com/api/ping)
+          echo "Response status: $STATUS"
