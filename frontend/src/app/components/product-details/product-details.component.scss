@@ -86,6 +86,44 @@
 .carousel-prev { left: 0.75rem; }
 .carousel-next { right: 0.75rem; }
 
+.thumbnails {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.thumbnail {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+  transition: border-color 0.2s, opacity 0.2s;
+  opacity: 0.55;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &.thumbnail-active {
+    border-color: #00e5ff;
+    opacity: 1;
+  }
+
+  &:hover:not(.thumbnail-active) {
+    opacity: 0.85;
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
 .carousel-dots {
   position: absolute;
   bottom: 0.75rem;

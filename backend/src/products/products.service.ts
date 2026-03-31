@@ -1,11 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { UploadService } from '../upload/upload.service';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 import { AvailabilityStatus, Label, Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProductsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private uploadService: UploadService,
+  ) {}
 
   async findAll(params: {
     search?: string;
@@ -81,7 +85,12 @@ export class ProductsService {
 
     // If new images are provided, replace all existing ones
     if (imageUrls !== undefined) {
+      const oldImages = await this.prisma.productImage.findMany({
+        where: { productId: id },
+        select: { url: true },
+      });
       await this.prisma.productImage.deleteMany({ where: { productId: id } });
+      await this.uploadService.deleteImages(oldImages.map((img) => img.url));
     }
 
     return this.prisma.product.update({
@@ -108,7 +117,8 @@ export class ProductsService {
   }
 
   async remove(id: number) {
-    await this.findOne(id);
+    const product = await this.findOne(id);
+    await this.uploadService.deleteImages(product.images.map((img) => img.url));
     return this.prisma.product.delete({
       where: { id },
       include: { images: true, category: true },

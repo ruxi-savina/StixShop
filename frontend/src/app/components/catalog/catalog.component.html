@@ -115,7 +115,16 @@
           <a [routerLink]="['/product', product.id]" class="product-link">
             <div class="product-image-wrap">
               @if (product.images.length > 0) {
-                <img [src]="product.images[0].url" [alt]="product.name" class="product-image" />
+                <img [src]="product.images[getCardImageIndex(product.id)].url" [alt]="product.name" class="product-image" />
+                @if (product.images.length > 1) {
+                  <button class="card-carousel-btn card-carousel-prev" (click)="prevCardImage($event, product)">&#8249;</button>
+                  <button class="card-carousel-btn card-carousel-next" (click)="nextCardImage($event, product)">&#8250;</button>
+                  <div class="card-carousel-dots">
+                    @for (img of product.images; track img.id; let i = $index) {
+                      <span class="card-dot" [class.card-dot-active]="getCardImageIndex(product.id) === i"></span>
+                    }
+                  </div>
+                }
               } @else {
                 <div class="product-image-placeholder">
                   <span>◈</span>

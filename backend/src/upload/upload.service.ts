@@ -40,4 +40,26 @@ export class UploadService {
 
     return { url: data.publicUrl };
   }
+
+  async deleteImages(urls: string[]): Promise<void> {
+    const marker = `/public/${this.bucket}/`;
+    const paths = urls
+      .map((url) => {
+        const idx = url.indexOf(marker);
+        return idx !== -1 ? url.slice(idx + marker.length) : null;
+      })
+      .filter((p): p is string => !!p);
+
+    if (paths.length === 0) return;
+
+    const { error } = await this.supabase.storage
+      .from(this.bucket)
+      .remove(paths);
+
+    if (error) {
+      throw new InternalServerErrorException(
+        `Failed to delete image(s): ${error.message}`,
+      );
+    }
+  }
 }

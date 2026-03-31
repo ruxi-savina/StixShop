@@ -6,7 +6,7 @@ import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
 import { AuthService } from '../../services/auth.service';
 import { ProductFormComponent } from '../product-form/product-form.component';
-import { AvailabilityStatus, Label } from '../../models/product.model';
+import { AvailabilityStatus, Label, Product } from '../../models/product.model';
 
 @Component({
   selector: 'app-catalog',
@@ -23,6 +23,30 @@ export class CatalogComponent implements OnInit {
 
   showProductForm = signal(false);
   editingProductId = signal<number | null>(null);
+
+  private cardImageIndexes = new Map<number, number>();
+
+  getCardImageIndex(productId: number): number {
+    return this.cardImageIndexes.get(productId) ?? 0;
+  }
+
+  prevCardImage(event: Event, product: Product): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const len = product.images.length;
+    if (len < 2) return;
+    const current = this.getCardImageIndex(product.id);
+    this.cardImageIndexes.set(product.id, (current - 1 + len) % len);
+  }
+
+  nextCardImage(event: Event, product: Product): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const len = product.images.length;
+    if (len < 2) return;
+    const current = this.getCardImageIndex(product.id);
+    this.cardImageIndexes.set(product.id, (current + 1) % len);
+  }
 
   // Category management
   showCategoryManager = signal(false);

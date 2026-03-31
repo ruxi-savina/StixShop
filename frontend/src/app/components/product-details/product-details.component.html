@@ -36,6 +36,20 @@
             </div>
           }
         </div>
+
+        @if (product()!.images.length > 1) {
+          <div class="thumbnails">
+            @for (img of product()!.images; track img.id; let i = $index) {
+              <button
+                class="thumbnail"
+                [class.thumbnail-active]="selectedImageIndex() === i"
+                (click)="selectImage(i)"
+              >
+                <img [src]="img.url" [alt]="product()!.name + ' photo ' + (i + 1)" />
+              </button>
+            }
+          </div>
+        }
       </div>
 
       <!-- Product info -->
