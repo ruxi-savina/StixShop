@@ -1,6 +1,8 @@
 import {
   Controller,
   Post,
+  Delete,
+  Body,
   UseGuards,
   UseInterceptors,
   UploadedFile,
@@ -31,5 +33,11 @@ export class UploadController {
     file: Express.Multer.File,
   ) {
     return this.uploadService.uploadImage(file);
+  }
+
+  @Delete('images')
+  @UseGuards(JwtAuthGuard)
+  async deleteImages(@Body() body: { urls: string[] }) {
+    await this.uploadService.deleteImages(body.urls);
   }
 }

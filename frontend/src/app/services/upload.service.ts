@@ -18,4 +18,13 @@ export class UploadService {
     );
     return res.url;
   }
+
+  async deleteImages(urls: string[]): Promise<void> {
+    if (!urls.length) return;
+    await firstValueFrom(
+      this.http.delete(`${environment.apiUrl}/upload/images`, {
+        body: { urls },
+      }),
+    );
+  }
 }

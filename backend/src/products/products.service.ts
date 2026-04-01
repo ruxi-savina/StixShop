@@ -65,7 +65,11 @@ export class ProductsService {
   }
 
   async create(dto: CreateProductDto) {
-    const { imageUrls, ...data } = dto;
+    const { imageUrls, imagesToDelete, ...data } = dto;
+
+    if (imagesToDelete?.length) {
+      await this.uploadService.deleteImages(imagesToDelete);
+    }
 
     return this.prisma.product.create({
       data: {
@@ -81,16 +85,25 @@ export class ProductsService {
   async update(id: number, dto: UpdateProductDto) {
     await this.findOne(id);
 
-    const { imageUrls, ...data } = dto;
+    const { imageUrls, imagesToDelete, ...data } = dto;
 
-    // If new images are provided, replace all existing ones
+    // If new images are provided, delete only removed ones (diff + session orphans)
     if (imageUrls !== undefined) {
       const oldImages = await this.prisma.productImage.findMany({
         where: { productId: id },
         select: { url: true },
       });
+      const newUrlSet = new Set(imageUrls);
+      const removedOldUrls = oldImages
+        .map((img) => img.url)
+        .filter((url) => !newUrlSet.has(url));
+      const allToDelete = [
+        ...new Set([...removedOldUrls, ...(imagesToDelete ?? [])]),
+      ];
       await this.prisma.productImage.deleteMany({ where: { productId: id } });
-      await this.uploadService.deleteImages(oldImages.map((img) => img.url));
+      await this.uploadService.deleteImages(allToDelete);
+    } else if (imagesToDelete?.length) {
+      await this.uploadService.deleteImages(imagesToDelete);
     }
 
     return this.prisma.product.update({

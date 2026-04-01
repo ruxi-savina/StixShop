@@ -40,6 +40,11 @@ export class CreateProductDto {
   @IsString({ each: true })
   @IsOptional()
   imageUrls?: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  imagesToDelete?: string[];
 }
 
 export class UpdateProductDto {
@@ -87,4 +92,9 @@ export class UpdateProductDto {
   @IsString({ each: true })
   @IsOptional()
   imageUrls?: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  imagesToDelete?: string[];
 }

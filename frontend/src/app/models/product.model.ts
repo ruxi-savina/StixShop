@@ -44,6 +44,7 @@ export interface CreateProductPayload {
   isVisible?: boolean;
   categoryId: number;
   imageUrls?: string[];
+  imagesToDelete?: string[];
 }
 
 export interface UpdateProductPayload extends Partial<CreateProductPayload> {}

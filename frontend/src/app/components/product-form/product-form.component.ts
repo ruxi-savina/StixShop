@@ -30,6 +30,8 @@ export class ProductFormComponent implements OnInit {
   isVisible = signal(true);
   categoryId = signal<number | null>(null);
   imageUrls = signal<string[]>([]);
+  removedImageUrls = signal<string[]>([]);
+  private sessionUploadedUrls = signal<string[]>([]);
 
   constructor(
     private productService: ProductService,
@@ -64,6 +66,8 @@ export class ProductFormComponent implements OnInit {
       this.isVisible.set(p.isVisible);
       this.categoryId.set(p.categoryId);
       this.imageUrls.set(p.images.map((img) => img.url));
+      this.removedImageUrls.set([]);
+      this.sessionUploadedUrls.set([]);
     } finally {
       this.loading.set(false);
     }
@@ -79,6 +83,7 @@ export class ProductFormComponent implements OnInit {
       for (const file of Array.from(input.files)) {
         const url = await this.uploadService.uploadImage(file);
         urls.push(url);
+        this.sessionUploadedUrls.update((prev) => [...prev, url]);
       }
       this.imageUrls.set(urls);
     } finally {
@@ -88,11 +93,17 @@ export class ProductFormComponent implements OnInit {
 
   removeImage(index: number) {
     const urls = [...this.imageUrls()];
-    urls.splice(index, 1);
+    const [removed] = urls.splice(index, 1);
     this.imageUrls.set(urls);
+    this.removedImageUrls.update((prev) => [...prev, removed]);
   }
 
   close() {
+    // Delete any session-uploaded images that weren't saved
+    const unsaved = this.sessionUploadedUrls();
+    if (unsaved.length > 0) {
+      this.uploadService.deleteImages(unsaved).catch(console.error);
+    }
     this.closed.emit();
   }
 
@@ -116,6 +127,7 @@ export class ProductFormComponent implements OnInit {
         isVisible: this.isVisible(),
         categoryId: this.categoryId()!,
         imageUrls: this.imageUrls(),
+        imagesToDelete: this.removedImageUrls(),
       };
 
       if (this.isEditing) {
@@ -124,6 +136,8 @@ export class ProductFormComponent implements OnInit {
         await this.productService.createProduct(payload);
       }
 
+      // Clear session uploads so close() doesn't delete them (they're now saved)
+      this.sessionUploadedUrls.set([]);
       this.close();
     } finally {
       this.loading.set(false);
